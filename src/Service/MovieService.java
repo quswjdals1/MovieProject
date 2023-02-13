@@ -1,13 +1,15 @@
 package Service;
 
+import java.util.Scanner;
+
 public class MovieService {
 
-	public int movMain() {
+	public int movMain(Scanner sc) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int MmovMain() {
+	public int MmovMain(Scanner sc) {
 		// TODO Auto-generated method stub
 		return 0;
 	}

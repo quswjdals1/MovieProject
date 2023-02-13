@@ -1,5 +1,7 @@
 package Controller;
 
+import java.util.Scanner;
+
 import Service.MemberService;
 import Service.MovieService;
 
@@ -23,6 +25,7 @@ public class MovieController {
 	
 	private MemberService memberService =new MemberService();
 	private MovieService movieService =new MovieService();
+	Scanner sc = new Scanner(System.in);
 	
 	
 	int view = 1;
@@ -32,27 +35,27 @@ public class MovieController {
 			
 			switch(view){
 				case 1: 
-					view=memberService.main();  
+					view=memberService.main(sc);  
 					break;
 					
 				case 2:
-					view=memberService.join();
+					view=memberService.join(sc);
 					break;
 		
 				case 3:							   
-					view=memberService.login();
+					view=memberService.login(sc);
 					break;
 					
 			    case 4:
-					view=memberService.manLogin();
+					view=memberService.manLogin(sc);
 					break;
 		
 				case 5:
-					view=movieService.movMain();
+					view=movieService.movMain(sc);
 					break;
 					
 				case 6:
-					view=movieService.MmovMain();
+					view=memberService.MMain(sc);
 					break;
 				
 			}
