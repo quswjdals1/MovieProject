@@ -8,7 +8,6 @@ import View.View;
 public class MemberService {
 
 	private View view = new View();
-	private MemberDao memberDao = new MemberDao();
 	
 	public int main(Scanner sc) {
 		int select;
@@ -41,21 +40,21 @@ public class MemberService {
 
 	public int join(Scanner sc) {
 		// TODO Auto-generated method stub
-		int res=view.joinView(sc, memberDao);
+		int res=view.joinView(sc);
 		
 		return 1;
 	}
 
 	public int login(Scanner sc) {
 		// TODO Auto-generated method stub
-		int res=view.loginView(sc,memberDao);
-		return 2;
+		int res=view.loginView(sc);
+		return res;
 	}
 
 	public int manLogin(Scanner sc) {
 		// TODO Auto-generated method stub
-		int res;
-		return 3;
+		int res=view.manLogin(sc);
+		return res;
 	}
 
 	public int MMain(Scanner sc) {

@@ -19,7 +19,11 @@ java.sql.Timestamp t = java.sql.Timestamp.valueOf(now);
 ***********************************************************
 */
 public class ScheduleDao {
+	private static ScheduleDao scheduleDao= new ScheduleDao();
 	
+	public static ScheduleDao getInstance() {
+		return scheduleDao;
+	}
 
 
 	
@@ -42,6 +46,7 @@ public class ScheduleDao {
 			sb.append("    schedule ");
 			sb.append("WHERE ");
 			sb.append("    schedule.mov_id = movie.mov_id ");
+			sb.append("    and sysdate<sch_date ");
 			String sql=sb.toString();
 			PreparedStatement pStatement = connection.prepareStatement(sql);
 			ResultSet resultSet = pStatement.executeQuery();
