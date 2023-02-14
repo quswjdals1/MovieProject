@@ -22,6 +22,14 @@ java.sql.Timestamp t = java.sql.Timestamp.valueOf(now);
 public class SeatDao {
 	//select update
 	
+	private static SeatDao seatDao = new SeatDao();
+	
+	public static SeatDao getInstance() {
+		return seatDao;
+	}
+	
+	
+	
 
 	public List<SeatVo> selectSeatByDate(Timestamp schDate){
 		

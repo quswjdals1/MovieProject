@@ -13,6 +13,11 @@ import Vo.MovieVo;
 
 public class MovieDao {
 
+	private static MovieDao movieDao = new MovieDao();
+	
+	public static MovieDao getInstance() {
+		return movieDao;
+	}
 	
 	public List<MovieVo> selectMovie(){
 		

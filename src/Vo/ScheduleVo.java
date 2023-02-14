@@ -28,6 +28,11 @@ public class ScheduleVo {
 		MOV_Name = mOV_Name;
 	}
 
+	public String getMovId() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 	
 	

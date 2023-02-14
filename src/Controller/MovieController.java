@@ -31,6 +31,7 @@ public class MovieController {
 	
 	int view = 1;
 	void run() {
+
 		
 		out:while(true){
 			
