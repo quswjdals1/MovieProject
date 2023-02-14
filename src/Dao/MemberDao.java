@@ -13,6 +13,12 @@ import Vo.MemberVo;
 
 public class MemberDao {
 
+	private static MemberDao memberDao = new MemberDao();
+	
+	public static MemberDao getInstance() {
+		return memberDao;
+	}
+	
 	public List<MemberVo> selectMember() throws Exception{
 		Class.forName("oracle.jdbc.driver.OracleDriver");
 		Connection connection = DriverManager.getConnection("jdbc:oracle:thin:@192.168.146.61:1521:xe","movie","java");
@@ -52,6 +58,89 @@ public class MemberDao {
 		String sql = sb.toString();
 		PreparedStatement statement = connection.prepareStatement(sql);
 		statement.setString(1, id);
+		ResultSet resultSet = statement.executeQuery();
+		String dup=null;
+		while(resultSet.next()) {
+			dup=resultSet.getString(1);
+		}
+		resultSet.close();
+		statement.close();
+		connection.close();
+		if(dup!=null) {
+			return true;
+		}
+		return false;
+	}
+	
+	
+	public MemberVo selectMemberById(String id) throws Exception{
+		
+		//id를 받아서 해당하는 유저정보 리턴, 해당하는 유저정보가 없으면 null 리턴
+		
+		Class.forName("oracle.jdbc.driver.OracleDriver");
+		Connection connection = DriverManager.getConnection("jdbc:oracle:thin:@192.168.146.61:1521:xe","movie","java");
+		
+		
+		StringBuilder sb = new StringBuilder();
+		sb.append("SELECT ");
+		sb.append("    mem_id, ");
+		sb.append("    mem_pw, ");
+		sb.append("    mem_name ");
+		sb.append("FROM ");
+		sb.append("    member ");
+		sb.append("WHERE ");
+		sb.append("    mem_id = ? ");
+		String sql = sb.toString();
+		PreparedStatement statement = connection.prepareStatement(sql);
+		statement.setString(1, id);
+		ResultSet resultSet = statement.executeQuery();
+		String memId=null;
+		String memPw=null;
+		String memName=null;
+		while(resultSet.next()) {
+			memId=resultSet.getString(1);
+			memPw=resultSet.getString(2);
+			memName=resultSet.getString(3);
+		}
+		
+		resultSet.close();
+		statement.close();
+		connection.close();
+		
+		if(memId==null) {
+			return null;
+		}
+		
+		return new MemberVo(memId, memPw, memName);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+public boolean selectLoginMember(String id,String pw) throws Exception{
+		
+		//id,pw를 받아서 회원 id가 있을경우 true, 중복없으면 false
+		
+		Class.forName("oracle.jdbc.driver.OracleDriver");
+		Connection connection = DriverManager.getConnection("jdbc:oracle:thin:@192.168.146.61:1521:xe","movie","java");
+		
+		
+		StringBuilder sb = new StringBuilder();
+		sb.append("SELECT ");
+		sb.append("    mem_id ");
+		sb.append("FROM ");
+		sb.append("    member ");
+		sb.append("WHERE ");
+		sb.append("    mem_id = ? ");
+		sb.append("   and mem_pw = ? ");
+		String sql = sb.toString();
+		PreparedStatement statement = connection.prepareStatement(sql);
+		statement.setString(1, id);
+		statement.setString(2, pw);
 		ResultSet resultSet = statement.executeQuery();
 		String dup=null;
 		while(resultSet.next()) {
