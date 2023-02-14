@@ -17,7 +17,11 @@ import Vo.ReservationVo;
 import oracle.jdbc.OracleTypes;
 
 public class ReservationDao {
-	
+		private static ReservationDao reservationDao = new ReservationDao();
+		
+		public static ReservationDao getInstance() {
+			return reservationDao;
+		}
 
 	
 		public List<ReservationVo> selectReservation() throws Exception{
