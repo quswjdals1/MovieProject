@@ -11,10 +11,7 @@ public class TicketVo {
 		private String SEAT_NO;
 		private Timestamp SCH_DATE; //date는 시간이 안나와서 timestamp를 시각을 보여주기위해서선호  
 		 // insert 할때 사용
-		public TicketVo(String TICKET_NO, int TICKET_PRICE, String MOV_ID) {
-			this.TICKET_NO = TICKET_NO;
-			this.MOV_ID = MOV_ID;
-		}
+		
 
 		
 		// update 할때 사용
@@ -26,6 +23,15 @@ public class TicketVo {
 		  this.MOV_ID = MOV_ID;
 		  this.SEAT_NO = SEAT_NO;
 		  this.SCH_DATE = SCH_DATE;
+		}
+
+
+		public TicketVo(int tICKET_PRICE, String mOV_ID, String sEAT_NO, Timestamp sCH_DATE) {
+			super();
+			TICKET_PRICE = tICKET_PRICE;
+			MOV_ID = mOV_ID;
+			SEAT_NO = sEAT_NO;
+			SCH_DATE = sCH_DATE;
 		}
 
 
