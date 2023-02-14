@@ -2,11 +2,13 @@ package Service;
 
 import java.util.Scanner;
 
+import Dao.MemberDao;
 import View.View;
 
 public class MemberService {
 
 	private View view = new View();
+	private MemberDao memberDao = new MemberDao();
 	
 	public int main(Scanner sc) {
 		int select;
@@ -39,24 +41,26 @@ public class MemberService {
 
 	public int join(Scanner sc) {
 		// TODO Auto-generated method stub
-		
-		int res=view.joinView(sc);
+		int res=view.joinView(sc, memberDao);
 		
 		return 1;
 	}
 
 	public int login(Scanner sc) {
 		// TODO Auto-generated method stub
-		return 0;
+		int res=view.loginView(sc,memberDao);
+		return 2;
 	}
 
 	public int manLogin(Scanner sc) {
 		// TODO Auto-generated method stub
-		return 0;
+		int res;
+		return 3;
 	}
 
 	public int MMain(Scanner sc) {
 		// TODO Auto-generated method stub
+		int res ;
 		return 0;
 	}
 
