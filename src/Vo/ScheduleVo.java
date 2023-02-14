@@ -4,16 +4,12 @@ import java.sql.Timestamp;
 
 public class ScheduleVo {
 	private Timestamp SCH_DATE;
-	private String MOV_ID;
-
-	public ScheduleVo(String MOV_ID) {
-		this.MOV_ID = MOV_ID;
-	}
-
-	public ScheduleVo(Timestamp SCH_DATE, String MOV_ID) {
-		this.SCH_DATE = SCH_DATE;
-		this.MOV_ID = MOV_ID;
-
+	private String MOV_Name;
+			
+	public ScheduleVo(Timestamp sCH_DATE, String mOV_Name) {
+		super();
+		SCH_DATE = sCH_DATE;
+		MOV_Name = mOV_Name;
 	}
 
 	public Timestamp getSCH_DATE() {
@@ -24,17 +20,15 @@ public class ScheduleVo {
 		SCH_DATE = sCH_DATE;
 	}
 
-	public String getMOV_ID() {
-		return MOV_ID;
+	public String getMOV_Name() {
+		return MOV_Name;
 	}
 
-	public void setMOV_ID(String mOV_ID) {
-		MOV_ID = mOV_ID;
+	public void setMOV_Name(String mOV_Name) {
+		MOV_Name = mOV_Name;
 	}
 
-	@Override
-	public String toString() {
-		return String.format("%s\t%s\t%s\n", SCH_DATE, MOV_ID);
 
-	}
+	
+	
 }

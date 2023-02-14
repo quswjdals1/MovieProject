@@ -20,8 +20,9 @@ public class MovieController {
 	final int MOVMAIN=5;
 	final int MMOVMAIN=6;
 	
-	public String userId;
-	public String userPW;
+	public static String userId;
+	public static String userPW;
+	public static String resNo;
 	
 	private MemberService memberService =new MemberService();
 	private MovieService movieService =new MovieService();
