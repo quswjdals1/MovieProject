@@ -59,9 +59,9 @@ public class ReservationDao {
 		}
 		
 		
-		public boolean selectReservation(String id) throws Exception{
+		public List<ReservationVo> selectReservation(String id) throws Exception{
 			
-			//id를 받아서 중복된 id가 있을경우 true, 중복없으면 false
+			//id를 받아서 reservation 객체 list로 리턴
 			
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 			Connection connection = DriverManager.getConnection("jdbc:oracle:thin:@192.168.146.61:1521:xe","movie","java");
@@ -69,26 +69,32 @@ public class ReservationDao {
 			
 			StringBuilder sb = new StringBuilder();
 			sb.append("SELECT ");
+			sb.append("    res_no, ");
+			sb.append("    res_date, ");
+			sb.append("    res_total, ");
 			sb.append("    mem_id ");
 			sb.append("FROM ");
-			sb.append("    member ");
+			sb.append("    reservation ");
 			sb.append("WHERE ");
 			sb.append("    mem_id = ? ");
 			String sql = sb.toString();
 			PreparedStatement statement = connection.prepareStatement(sql);
 			statement.setString(1, id);
 			ResultSet resultSet = statement.executeQuery();
-			String dup=null;
+			List<ReservationVo> list = new ArrayList<>();
 			while(resultSet.next()) {
-				dup=resultSet.getString(1);
+				String resNo=resultSet.getString("res_no");
+				Timestamp resDate=resultSet.getTimestamp("res_date");
+				int resTotal = resultSet.getInt("res_total");
+				String memId= resultSet.getString("mem_id");
+				
+				list.add(new ReservationVo(resNo, resDate, resTotal, memId));
 			}
 			resultSet.close();
 			statement.close();
 			connection.close();
-			if(dup!=null) {
-				return true;
-			}
-			return false;
+			
+			return list;
 		}
 		
 		
