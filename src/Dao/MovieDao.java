@@ -112,6 +112,55 @@ public class MovieDao {
 	
 	
 	
+public String selectNameById(String Id){
+		
+		// 영화id를 입력받아 이름 리턴
+		
+		String movName="";
+		List<MovieVo> list = new ArrayList<>();
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			Connection connection = DriverManager.getConnection("jdbc:oracle:thin:@192.168.146.61:1521:xe","movie","java");
+			StringBuilder sb = new StringBuilder();
+			sb.append("SELECT ");
+			sb.append("    mov_id, ");
+			sb.append("    mov_name, ");
+			sb.append("    mov_director ");
+			sb.append("FROM ");
+			sb.append("    movie ");
+			sb.append("WHERE ");
+			sb.append("    mov_id = ? ");
+			String sql=sb.toString();
+			PreparedStatement pStatement = connection.prepareStatement(sql);
+			pStatement.setString(1, Id);
+			ResultSet resultSet = pStatement.executeQuery();
+			
+			while(resultSet.next()) {
+				String movId=resultSet.getString("mov_id");
+				movName=resultSet.getString("mov_name");
+				String movDirector=resultSet.getString("mov_director");
+				
+			}
+			resultSet.close();
+			pStatement.close();
+			connection.close();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return movName;
+
+	}
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	public int insertMovie(MovieVo movieVo) {

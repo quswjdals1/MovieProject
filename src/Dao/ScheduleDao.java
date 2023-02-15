@@ -94,6 +94,7 @@ public class ScheduleDao {
 			sb.append("WHERE ");
 			sb.append("    schedule.mov_id = movie.mov_id ");
 			sb.append("    and movie.mov_name=? ");
+			sb.append("    and sysdate<sch_date ");
 			String sql=sb.toString();
 			PreparedStatement pStatement = connection.prepareStatement(sql);
 			pStatement.setString(1, name);
@@ -116,6 +117,49 @@ public class ScheduleDao {
 			e.printStackTrace();
 		}
 		return list;
+
+	}
+	
+	
+	
+	
+	public boolean selectScheduleByDate(Timestamp timestamp){
+		
+		// 날짜를 입력받아 해당 날짜의 객체가 있을경우 true, 없으면 false 리턴.
+		
+		boolean dup=false;
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			Connection connection = DriverManager.getConnection("jdbc:oracle:thin:@192.168.146.61:1521:xe","movie","java");
+			StringBuilder sb = new StringBuilder();
+			sb.append("SELECT ");
+			sb.append("    mov_name, ");
+			sb.append("    sch_date ");
+			sb.append("FROM ");
+			sb.append("    movie, ");
+			sb.append("    schedule ");
+			sb.append("WHERE ");
+			sb.append("    schedule.mov_id = movie.mov_id ");
+			sb.append("    and sch_date=? ");
+			String sql=sb.toString();
+			PreparedStatement pStatement = connection.prepareStatement(sql);
+			pStatement.setTimestamp(1, timestamp);
+			ResultSet resultSet = pStatement.executeQuery();
+			
+			while(resultSet.next()) {
+				dup=true;
+			}
+			resultSet.close();
+			pStatement.close();
+			connection.close();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return dup;
 
 	}
 	
@@ -216,12 +260,12 @@ public class ScheduleDao {
 			return result;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			System.out.println("해당 아이디의 계정이 없습니다.");
+			System.out.println("delete sql오류");
+			e.printStackTrace();
 			return result;
 		}
 	}
 	
-	
-	
+
 	
 }
