@@ -22,8 +22,9 @@ public class MovieController {
 	final int LOGIN= 3;
 	final int MLOGIN=4;
 	final int MOVMAIN=5;
-	final int MMOVMAIN=6;
+	final int MMAIN=6;
 	final int resCheckPage=7;
+	
 	
 	public static String userId;
 	public static String userPW;

@@ -474,7 +474,7 @@ public class View {
 
 			System.out.println("=========================================");
 			System.out.println();
-			System.out.println("                 관리자 로그인");
+			System.out.println("                  관리자 로그인");
 			System.out.println();
 			System.out.println("          I D    : " + id);
 			System.out.println();
@@ -933,7 +933,354 @@ public class View {
 		}
 
 	}
+
+
+	public MovieVo MMain(Scanner sc) {
+		
+		MovieDao movieDao = MovieDao.getInstance();
+		
+		List<MovieVo> list = movieDao.selectMovie();
+		
+		
+		System.out.println("=========================================");
+		System.out.println();
+		System.out.println("                  영화 목록");
+		System.out.println();
+		System.out.println("\t번호|mid|\t|title|\t|director|");
+		for(int i=0; i<7; i++) {
+			if(i<list.size()) {
+				System.out.println("\t"+(i+1)+". "+list.get(i).getMovId()+"\t"+list.get(i).getMovName()+"\t"+list.get(i).getMovDirector());
+			}else{
+				System.out.println();
+			}
+		}
+		System.out.println(" (관리자 모드)");
+		System.out.println(" 로그아웃(enter)           수정할 영화 번호 입력");
+		System.out.println("=========================================");
+		String sel = sc.nextLine();
+		if(sel.equals("")) {
+			MovieController.resNo=null;
+			MovieController.userId=null;
+			MovieController.userPW=null;
+			MovieController.cart=null;
+			return null;
+		}
+		
+		return list.get(Integer.parseInt(sel)-1);
+	}
 	
+	public void MSchedule(Scanner sc, MovieVo movieVo,int pageNum,int curNum, List<ScheduleVo> list) {
+		
+
+
+		// TODO Auto-generated method stub
+		
+		
+		System.out.println("=========================================");
+		System.out.println();
+		System.out.println("            "+movieVo.getMovName()+" 상영 일정");
+		System.out.println();
+		System.out.println("\t번호\t|상영시간|");
+		for(int i=curNum*7+0; i<curNum*7+7; i++) {
+			if(i<list.size()) {
+				System.out.println("\t"+(i+1)+". "+list.get(i).getSCH_DATE().toString().substring(0,16));
+			}else{
+				System.out.println();
+			}
+		}
+		System.out.println("                         이전(p), 다음(n) ");
+		System.out.println("뒤로가기(enter)       추가(0),삭제,수정(행번호).");
+		System.out.println("=========================================");
+		
+	}
+
+
+	public int addSchedule(Scanner sc, MovieVo mRes) {
+		// TODO Auto-generated method stub
+		ScheduleDao scheduleDao = ScheduleDao.getInstance();
+		
+		System.out.println("=========================================");
+		System.out.println();
+		System.out.println("               상영일정 추가");
+		System.out.println();
+		System.out.println("");		
+		System.out.println("        영화 id	: "+mRes.getMovId());
+		System.out.println();
+		System.out.println("        영화 제목	: "+mRes.getMovName() );
+		System.out.println();
+		System.out.println("        상영 일자	: ");
+		System.out.println();
+		System.out.println();
+		System.out.println("                해당영화의 상영일자를 입력하세요.");
+		System.out.println("                형식: yyyy-mm-dd hh:mm");
+		System.out.println("=========================================");
+		String date="";
+		try {
+			date = sc.nextLine()+":00";
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			System.out.println("입력 형식 에러");
+			try {
+				Thread.sleep(1500);
+			} catch (InterruptedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
+			return 6;
+		}
+		java.sql.Timestamp t = java.sql.Timestamp.valueOf(date);
+		
+		if(scheduleDao.selectScheduleByDate(t)) {
+			System.out.println("중복된 날짜가 있습니다.");
+			try {
+				Thread.sleep(1500);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return addSchedule(sc, mRes);
+		}
+		
+		
+		
+		System.out.println("=========================================");
+		System.out.println();
+		System.out.println("               상영일정 추가");
+		System.out.println();
+		System.out.println("");		
+		System.out.println("        영화 id	: "+mRes.getMovId());
+		System.out.println();
+		System.out.println("        영화 제목	: "+mRes.getMovName() );
+		System.out.println();
+		System.out.println("        상영 일자	: "+date);
+		System.out.println();
+		System.out.println();
+		System.out.println("");
+		System.out.println("                       엔터를 누르면 완료됩니다.");
+		System.out.println("=========================================");
+		String com = sc.nextLine();
+		
+		if(scheduleDao.insertSchedule(new ScheduleVo(t, mRes.getMovName()))==1) {
+			System.out.println("등록되었습니다.");
+			try {
+				Thread.sleep(1500);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}else {
+			System.out.println("등록 실패");
+			try {
+				Thread.sleep(1500);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		
+		
+		return 6;
+	}
+
+
+	public int udSelect(Scanner sc, MovieVo mRes, ScheduleVo scheduleVo) {
+		// TODO Auto-generated method stub
+		
+		System.out.println("=========================================");
+		System.out.println();
+		System.out.println("               선택된 상영일정 ");
+		System.out.println();
+		System.out.println("");		
+		System.out.println("        영화 id	: "+mRes.getMovId());
+		System.out.println();
+		System.out.println("        영화 제목	: "+mRes.getMovName() );
+		System.out.println();
+		System.out.println("        상영 일자	: "+scheduleVo.getSCH_DATE().toString().substring(0,16));
+		System.out.println();
+		System.out.println();
+		System.out.println("");
+		System.out.println("                           삭제(d), 수정(u)");
+		System.out.println("=========================================");
+		String duSel=sc.nextLine();
+		if(!(duSel.equals("d")||duSel.equals("u"))) {
+			System.out.println("잘못된 입력입니다.");
+			try {
+				Thread.sleep(1500);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return udSelect(sc, mRes, scheduleVo);
+		}
+		
+		if(duSel.equals("d")) {
+			return 0;
+		}else {
+			return 1;
+		}
+
+	}
+
+
+	public int delSchedule(Scanner sc, MovieVo mRes, ScheduleVo scheduleVo) {
+		// TODO Auto-generated method stub
+		System.out.println("=========================================");
+		System.out.println();
+		System.out.println("               선택된 상영일정 ");
+		System.out.println();
+		System.out.println("");		
+		System.out.println("        영화 id	: "+mRes.getMovId());
+		System.out.println();
+		System.out.println("        영화 제목	: "+mRes.getMovName() );
+		System.out.println();
+		System.out.println("        상영 일자	: "+scheduleVo.getSCH_DATE().toString().substring(0,16));
+		System.out.println();
+		System.out.println();
+		System.out.println("");
+		System.out.println("             삭제를 진행하시려면 엔터를 눌러주세요.");
+		System.out.println("=========================================");
+		String duSel=sc.nextLine();
+		if(duSel.equals("")) {
+			ScheduleDao scheduleDao = ScheduleDao.getInstance();
+			int res=0;
+			try {
+				res=scheduleDao.deleteScheduleByDate(scheduleVo.getSCH_DATE());
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			System.out.println("삭제가 완료되었습니다.");
+			try {
+				Thread.sleep(1500);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return 1;
+		}else {
+			System.out.println("잘못된 입력입니다.");
+			try {
+				Thread.sleep(1500);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return delSchedule(sc, mRes, scheduleVo);
+		}
+
+	}
+
+
+	public int uptSchedule(Scanner sc, MovieVo mRes, ScheduleVo scheduleVo) {
+		// TODO Auto-generated method stub
+		ScheduleDao scheduleDao = ScheduleDao.getInstance();
+		
+		System.out.println("=========================================");
+		System.out.println();
+		System.out.println("               선택된 상영일정 ");
+		System.out.println();
+		System.out.println("");		
+		System.out.println("        영화 id	: "+mRes.getMovId());
+		System.out.println();
+		System.out.println("        영화 제목	: "+mRes.getMovName() );
+		System.out.println();
+		System.out.println("       현재 상영일자: "+scheduleVo.getSCH_DATE().toString().substring(0,16));
+		System.out.println();
+		System.out.println("       변경 상영일자: ");
+		System.out.println("");
+		System.out.println("    수정할 상영일자 입력 형식: yyyy-mm-dd hh:mm");
+		System.out.println("=========================================");
+		String date="";
+		try {
+			date = sc.nextLine()+":00";
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			System.out.println("입력 형식 에러");
+			try {
+				Thread.sleep(1500);
+			} catch (InterruptedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
+			return uptSchedule(sc, mRes, scheduleVo);
+		}
+		java.sql.Timestamp t = java.sql.Timestamp.valueOf(date);
+		
+		if(scheduleDao.selectScheduleByDate(t)) {
+			System.out.println("중복된 날짜가 있습니다.");
+			try {
+				Thread.sleep(1500);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return uptSchedule(sc, mRes, scheduleVo);
+		}else {
+			
+			System.out.println("=========================================");
+			System.out.println();
+			System.out.println("               선택된 상영일정 ");
+			System.out.println();
+			System.out.println("");		
+			System.out.println("        영화 id	: "+mRes.getMovId());
+			System.out.println();
+			System.out.println("        영화 제목	: "+mRes.getMovName() );
+			System.out.println();
+			System.out.println("       현재 상영일자: "+scheduleVo.getSCH_DATE().toString().substring(0,16));
+			System.out.println();
+			System.out.println("       변경 상영일자: "+date.substring(0,16));
+			System.out.println("");
+			System.out.println("          enter를 누르면 수정이 완료됩니다.");
+			System.out.println("=========================================");
+			sc.nextLine();			
+			
+			int res=0;
+			try {
+				res=scheduleDao.deleteScheduleByDate(scheduleVo.getSCH_DATE());
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			if(res!=1) {
+				System.out.println("update 실패1");
+				try {
+					Thread.sleep(1500);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				return 6;
+			}
+			
+			if(scheduleDao.insertSchedule(new ScheduleVo(t, mRes.getMovName()))==1) {
+				System.out.println("수정 되었습니다.");
+				try {
+					Thread.sleep(1500);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}else {
+				System.out.println("update 실패2");
+				try {
+					Thread.sleep(1500);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+			
+			
+			
+			
+		}
+		return 0;
+		
+	}
 	
 	
 	
