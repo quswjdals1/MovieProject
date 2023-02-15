@@ -7,7 +7,7 @@ import View.View;
 
 public class MemberService {
 
-	private View view = new View();
+	private static View view = View.getInstance();
 	
 	public int main(Scanner sc) {
 		int select;
