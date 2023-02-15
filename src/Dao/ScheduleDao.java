@@ -94,6 +94,7 @@ public class ScheduleDao {
 			sb.append("WHERE ");
 			sb.append("    schedule.mov_id = movie.mov_id ");
 			sb.append("    and movie.mov_name=? ");
+			sb.append("    and sysdate<sch_date ");
 			String sql=sb.toString();
 			PreparedStatement pStatement = connection.prepareStatement(sql);
 			pStatement.setString(1, name);

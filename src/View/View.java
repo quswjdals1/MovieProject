@@ -1,6 +1,8 @@
 package View;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 
@@ -8,14 +10,26 @@ import Controller.MovieController;
 import Dao.MemberDao;
 import Dao.MovieDao;
 import Dao.ReservationDao;
+import Dao.Reservation_TicketDao;
 import Dao.ScheduleDao;
 import Dao.SeatDao;
+import Dao.TicketDao;
 import Vo.MemberVo;
 import Vo.MovieVo;
+import Vo.ReservationVo;
+import Vo.Reservation_TicketVo;
 import Vo.ScheduleVo;
 import Vo.SeatVo;
+import Vo.TicketVo;
 
 public class View {
+	
+	private static View view = new View();
+	
+	public static View getInstance() {
+		return view;
+	}
+
 
 	public int mainView(Scanner sc) {
 		// TODO Auto-generated method stub
@@ -343,12 +357,14 @@ public class View {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
+			
 			if(result) {
 				MovieController.userId=id;
 				MovieController.userPW=password;
 				String createdNo=ReservationDao.getInstance().insertReservation(id);
 				if(!createdNo.equals("error")) {
 					MovieController.resNo=createdNo;
+					MovieController.cart=new HashSet<>();
 					System.out.println("로그인 완료!");
 					try {
 						Thread.sleep(2000);
@@ -571,9 +587,12 @@ public class View {
 		System.out.println("=========================================");
 		String sel = sc.nextLine();
 		if(sel.equals("")) {
-			MovieController.resNo="";
-			MovieController.userId="";
-			MovieController.userPW="";
+			MovieController.resNo=null;
+			MovieController.userId=null;
+			MovieController.userPW=null;
+			MovieController.cart=null;
+			return null;
+		}else if(sel.equals("a")) {
 			return null;
 		}
 		
@@ -662,10 +681,10 @@ public class View {
 		
 		SeatDao seatDao = SeatDao.getInstance();
 		
-		List<SeatVo> list = seatDao.selectSeatByDate(sRes.getSCH_DATE());
+		
 		
 		while(true) {
-			
+			List<SeatVo> list = seatDao.selectSeatByDate(sRes.getSCH_DATE());
 			System.out.println("=========================================");
 			System.out.println();
 			System.out.println("              선택한 일자 좌석표");
@@ -740,31 +759,179 @@ public class View {
 				continue;
 			}else {
 				SeatVo afterSeat =new SeatVo(sel, sRes.getSCH_DATE(), "yes");
-				int res=seatDao.updateSeat(afterSeat, true);
-				if(res==1) {
-					System.out.println("좌석 예매가 완료되었습니다.");
-					try {
-						Thread.sleep(1500);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					return afterSeat;
-					
-				}else {
-					System.out.println("좌석 예매에 실패했습니다.");
-					try {
-						Thread.sleep(1500);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-				
+				return afterSeat;		
 			}
+			
 		}
 	
 		
+	}
+
+
+	public int resCheckPage(Scanner sc) {
+		// TODO Auto-generated method stub
+		
+		System.out.println("=========================================");
+		System.out.println();
+		System.out.println("");
+		System.out.println();
+		System.out.println("          1. 과거 모든 결제내역 보기");
+		System.out.println();
+		System.out.println("          2. 장바구니 확인하기");
+		System.out.println();
+		System.out.println();
+		System.out.println();
+		System.out.println("");
+		System.out.println();
+		System.out.println();
+		System.out.println("");
+		System.out.println("=========================================");
+		
+		int sel = Integer.parseInt(sc.nextLine());
+
+		
+		return sel;
+	}
+
+
+	public int resCartPage(Scanner sc) {
+		MovieDao movieDao= MovieDao.getInstance();
+		System.out.println("=========================================");
+		System.out.println();
+		System.out.println("           "+MovieController.userId+" 님의 장바구니");
+		System.out.println("\t 번호, 영화이름, 일자, 가격순");
+		System.out.println();
+		List<TicketVo> list = new ArrayList<>();
+		Iterator<TicketVo> iter = MovieController.cart.iterator();
+		for(int i=0; i<5; i++) {	
+			if(iter.hasNext()) {
+				TicketVo next = iter.next();
+				System.out.println("  "+(i+1)+". "+movieDao.selectNameById(next.getMOV_ID())+" "+next.getSCH_DATE().toString().substring(0, 16)+" "+next.getSEAT_NO()+"  "+next.getTICKET_PRICE()+"원");
+				list.add(next);
+			}else {
+				System.out.println();
+			}
+		}
+		System.out.println("");
+		System.out.println();
+		System.out.println();
+		System.out.println("결제(b), 뒤로가기(enter)");
+		System.out.println("=========================================");
+		String sel = sc.nextLine();
+		if(sel.equals("")) {
+			return 5;
+		}else if(sel.equals("b")) {
+			TicketDao ticketDao = TicketDao.getInstance();
+			SeatDao seatDao = SeatDao.getInstance();
+			Reservation_TicketDao reservation_TicketDao = Reservation_TicketDao.getInstance();
+			for (int i = 0; i < list.size(); i++) {
+				//reservation_ticket테이블에 넣는 작업, list에 값있음
+				
+				int sRes=seatDao.updateSeat(new SeatVo(list.get(i).getSEAT_NO(),list.get(i).getSCH_DATE(),"no"), true);
+				if(sRes==0) {
+					System.out.println("좌석예약 에러");
+					return 999;
+				}
+
+				String ticketNo=ticketDao.insertTicket(list.get(i));
+				if(ticketNo.equals("error")) {
+					System.out.println("티켓발급 에러");
+					return 999;
+				}
+				
+				int res=reservation_TicketDao.insertRT(ticketNo,MovieController.resNo );
+				if(res==0) {
+					System.out.println("rt 데이터삽입 에러");
+					return 999;
+				}
+			}
+			
+			System.out.println("결제가 완료되었습니다.");
+			try {
+				Thread.sleep(1500);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			return 5;
+			
+			
+		}else {
+			System.out.println("잘못된 입력입니다");
+			try {
+				Thread.sleep(1500);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			return 5;
+		}
+	}
+
+
+	public int preResPage(Scanner sc,List<ReservationVo> list) {
+		// TODO Auto-generated method stub
+		Reservation_TicketDao reservation_TicketDao = Reservation_TicketDao.getInstance();
+		
+		List<Reservation_TicketVo> rtList = new ArrayList<>();
+		
+		for(int i=0; i<list.size(); i++) {
+			rtList.addAll(reservation_TicketDao.selectRtByResNo(list.get(i).getResNo()));
+		}
+		
+		TicketDao ticketDao = TicketDao.getInstance();
+		
+		List<TicketVo> ticketList = new ArrayList<>();
+		
+		for(int i=0; i<rtList.size(); i++) {
+			ticketList.add(ticketDao.selectTicket(rtList.get(i).getTICKET_NO()));
+		}
+
+		int pageNum=0;
+		if(ticketList.size()%7==0) {
+			pageNum=list.size()/7-1;
+		}else {
+			pageNum=list.size()/7;
+		}
+		int curNum=0;
+		
+		MovieDao movieDao = MovieDao.getInstance();
+		
+		while(true) {
+			System.out.println("====================================================================");
+			System.out.println();
+			System.out.println("            "+MovieController.userId+" 님의 결재목록");
+			System.out.println();
+			System.out.println("\t번호\t|티켓번호|\t|좌석|\t|영화제목|\t|상영시각|\t|가격|");
+			for(int i=curNum*7+0; i<curNum*7+7; i++) {
+				if(i<ticketList.size()) {
+					System.out.println("\t"+(i+1)+". "+ticketList.get(i).getTICKET_NO()+" "+ticketList.get(i).getSEAT_NO()+" "+movieDao.selectNameById(ticketList.get(i).getMOV_ID())+" "+ticketList.get(i).getSCH_DATE()+" "+ticketList.get(i).getTICKET_PRICE()+"원");
+				}else{
+					System.out.println();
+				}
+			}
+			System.out.println("                         이전(p), 다음(n) ");
+			System.out.println("                      뒤로가기(n,p제외 아무키)");
+			System.out.println("===================================================================");
+			String sel = sc.nextLine();
+			if(sel.equals("n")) {
+				if(curNum+1<=pageNum) {
+					curNum++;	
+				}
+				continue;
+			}else if(sel.equals("p")) {
+				if(curNum-1>=0) {
+					curNum--;	
+				}
+				continue;
+			}else {
+				return 5;
+			}
+				
+		}
+
 	}
 	
 	

@@ -1,10 +1,11 @@
 package Vo;
 
 import java.sql.Timestamp;
+import java.util.Objects;
 
 public class TicketVo {
 	
-
+	
 		private String TICKET_NO;
 		private int TICKET_PRICE;
 		private String MOV_ID;
@@ -32,6 +33,11 @@ public class TicketVo {
 			MOV_ID = mOV_ID;
 			SEAT_NO = sEAT_NO;
 			SCH_DATE = sCH_DATE;
+		}
+
+
+		public TicketVo() {
+			// TODO Auto-generated constructor stub
 		}
 
 
@@ -87,6 +93,29 @@ public class TicketVo {
 		public String toString() {
 			return String.format("%s\\t%s\\t%s\\t%s\\t%s\\t%s\\t%s\\n", TICKET_NO, TICKET_PRICE, MOV_ID, SEAT_NO, SCH_DATE );
 		}
+
+
+		@Override
+		public int hashCode() {
+			return Objects.hash(MOV_ID, SCH_DATE, SEAT_NO);
+		}
+
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			TicketVo other = (TicketVo) obj;
+			return Objects.equals(MOV_ID, other.MOV_ID) && Objects.equals(SCH_DATE, other.SCH_DATE)
+					&& Objects.equals(SEAT_NO, other.SEAT_NO);
+		}
+
+
+		
 		
 		
 		  
