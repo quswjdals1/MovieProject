@@ -77,7 +77,7 @@ public class ReservationDao {
 			sb.append("    reservation ");
 			sb.append("WHERE ");
 			sb.append("    mem_id = ? ");
-			sb.append("ORDER BY res_date ");
+			sb.append("ORDER BY res_date desc ");
 			String sql = sb.toString();
 			PreparedStatement statement = connection.prepareStatement(sql);
 			statement.setString(1, id);
