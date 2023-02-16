@@ -115,7 +115,7 @@ public class TicketDao {
 				ticketVo=new TicketVo(TicketNo, ticketPrice, movId, seatNo, schDate);
 			}
 			
-
+			resultSet.close();
 			pcStatement.close();
 			connection.close();
 		} catch (ClassNotFoundException e) {

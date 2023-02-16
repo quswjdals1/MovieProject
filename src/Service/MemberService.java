@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import Dao.MemberDao;
+import Dao.MovieDao;
 import Dao.ScheduleDao;
 import View.View;
 import Vo.MovieVo;
@@ -63,13 +64,63 @@ public class MemberService {
 
 	public int MMain(Scanner sc) {
 		// TODO Auto-generated method stub
-		MovieVo mRes=view.MMain(sc);
-		if(mRes==null) {
+		
+		MovieDao movieDao = MovieDao.getInstance();
+		List<MovieVo> mList = movieDao.selectMovie();
+		
+		int idx=view.MMain(sc,mList);
+		if(idx==0) {
 			return 1;
+		}else if(idx==-1) {
+			//영화삭제
+			int delIdx=view.movSelDel(sc,mList)-1;
+			int res = view.movDel(sc, mList.get(delIdx));
+			if(res==0) {
+				System.out.println("삭제 실패");
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}else {
+				System.out.println("삭제 성공");
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+			
+			return 6;
+		}else if(idx==-2) {
+			//영화 추가
+			int res=view.movAdd(sc,mList);
+			if(res==0) {
+				System.out.println("등록 실패");
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}else {
+				System.out.println("등록 성공");
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+			return 6;
 		}
+		
+		MovieVo mRes=mList.get(idx-1);
 		ScheduleDao scheduleDao = ScheduleDao.getInstance();
 		
-		List<ScheduleVo> list = scheduleDao.selectSchedule();
+		List<ScheduleVo> list = scheduleDao.selectScheduleByName(mRes.getMovName());
 		int schRowNum=0;
 		int pageNum=0;
 		if(list.size()%7==0) {
