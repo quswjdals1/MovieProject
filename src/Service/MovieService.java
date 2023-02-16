@@ -61,10 +61,6 @@ public class MovieService {
 		return 5;
 	}
 
-	public int MmovMain(Scanner sc) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
 
 
 

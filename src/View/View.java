@@ -784,13 +784,14 @@ public class View {
 		System.out.println("");
 		System.out.println();
 		System.out.println();
-		System.out.println("");
+		System.out.println("뒤로가기(enter)");
 		System.out.println("=========================================");
-		
-		int sel = Integer.parseInt(sc.nextLine());
-
-		
-		return sel;
+		String sel = sc.nextLine();
+		if(sel.equals("")) {
+			return 3;
+		}else {
+			return Integer.parseInt(sel);
+		}
 	}
 
 
@@ -824,6 +825,7 @@ public class View {
 			TicketDao ticketDao = TicketDao.getInstance();
 			SeatDao seatDao = SeatDao.getInstance();
 			Reservation_TicketDao reservation_TicketDao = Reservation_TicketDao.getInstance();
+			int total=0;
 			for (int i = 0; i < list.size(); i++) {
 				//reservation_ticket테이블에 넣는 작업, list에 값있음
 				
@@ -844,7 +846,21 @@ public class View {
 					System.out.println("rt 데이터삽입 에러");
 					return 999;
 				}
+				total+=list.get(i).getTICKET_PRICE();
 			}
+			
+			ReservationDao reservationDao= ReservationDao.getInstance();
+			try {System.out.println("총 결제 금액: "+total);
+				if(reservationDao.updateReservation(MovieController.resNo, total)==0) {
+					System.out.println("결제 오류");
+					return 999;
+				}
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			MovieController.resNo=reservationDao.insertReservation(MovieController.userId);
+			MovieController.cart.clear();
 			
 			System.out.println("결제가 완료되었습니다.");
 			try {
@@ -875,7 +891,10 @@ public class View {
 		// TODO Auto-generated method stub
 		Reservation_TicketDao reservation_TicketDao = Reservation_TicketDao.getInstance();
 		
+		
 		List<Reservation_TicketVo> rtList = new ArrayList<>();
+		
+
 		
 		for(int i=0; i<list.size(); i++) {
 			rtList.addAll(reservation_TicketDao.selectRtByResNo(list.get(i).getResNo()));
@@ -891,9 +910,9 @@ public class View {
 
 		int pageNum=0;
 		if(ticketList.size()%7==0) {
-			pageNum=list.size()/7-1;
+			pageNum=ticketList.size()/7-1;
 		}else {
-			pageNum=list.size()/7;
+			pageNum=ticketList.size()/7;
 		}
 		int curNum=0;
 		
@@ -902,12 +921,12 @@ public class View {
 		while(true) {
 			System.out.println("====================================================================");
 			System.out.println();
-			System.out.println("            "+MovieController.userId+" 님의 결재목록");
+			System.out.println("            "+MovieController.userId+" 님의 결제목록");
 			System.out.println();
 			System.out.println("\t번호\t|티켓번호|\t|좌석|\t|영화제목|\t|상영시각|\t|가격|");
 			for(int i=curNum*7+0; i<curNum*7+7; i++) {
 				if(i<ticketList.size()) {
-					System.out.println("\t"+(i+1)+". "+ticketList.get(i).getTICKET_NO()+" "+ticketList.get(i).getSEAT_NO()+" "+movieDao.selectNameById(ticketList.get(i).getMOV_ID())+" "+ticketList.get(i).getSCH_DATE()+" "+ticketList.get(i).getTICKET_PRICE()+"원");
+					System.out.println("\t"+(i+1)+". "+ticketList.get(i).getTICKET_NO()+" "+ticketList.get(i).getSEAT_NO()+" "+movieDao.selectNameById(ticketList.get(i).getMOV_ID())+" "+ticketList.get(i).getSCH_DATE().toString().substring(0,16)+" "+ticketList.get(i).getTICKET_PRICE()+"원");
 				}else{
 					System.out.println();
 				}

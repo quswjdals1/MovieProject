@@ -75,6 +75,7 @@ public class MovieController {
 				
 				case 999:
 					System.out.println("에러발생. 프로그램 종료");
+					System.exit(0);
 				
 			}
 
