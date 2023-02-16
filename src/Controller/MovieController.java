@@ -14,7 +14,7 @@ public class MovieController {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		MovieController movieController = new MovieController();
-		movieController.run(1);
+		movieController.run();
 	}
 	
 	final int MAIN = 1;
@@ -39,9 +39,8 @@ public class MovieController {
 	
 	
 	int view = 1;
-	void run(int test) {
-		view=test;
-		
+	void run() {
+	
 		out:while(true){
 			
 			switch(view){
@@ -75,6 +74,7 @@ public class MovieController {
 				
 				case 999:
 					System.out.println("에러발생. 프로그램 종료");
+					System.exit(0);
 				
 			}
 
