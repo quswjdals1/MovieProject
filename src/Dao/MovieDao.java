@@ -36,6 +36,7 @@ public class MovieDao {
 			sb.append("    mov_director ");
 			sb.append("FROM ");
 			sb.append("    movie ");
+			sb.append("ORDER BY mov_id ");
 			String sql=sb.toString();
 			PreparedStatement pStatement = connection.prepareStatement(sql);
 			ResultSet resultSet = pStatement.executeQuery();
@@ -195,7 +196,7 @@ public String selectNameById(String Id){
 			System.out.println("자바 클래스 오류");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			System.out.println("중복된 아이디가 있습니다.");
+			System.out.println("SQL 오류");
 		}
 		return result;
 		

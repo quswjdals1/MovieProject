@@ -27,12 +27,18 @@ public class MovieService {
 			}
 		}
 		ScheduleVo sRes = view.schMain(sc,mRes);
+		if(sRes==null) {
+			return 5;
+		}
 		SeatVo seatRes;
 		TicketVo ticketVo=new TicketVo();
 		
 		do {
 			
 			seatRes = view.seatMain(sc, sRes);
+			if(seatRes==null) {
+				return 5;
+			}
 			ticketVo.setMOV_ID(mRes.getMovId());
 			ticketVo.setSCH_DATE(seatRes.getSCH_DATE());
 			ticketVo.setSEAT_NO(seatRes.getSEAT_NO());
@@ -47,6 +53,7 @@ public class MovieService {
 				}
 			} else {
 				break;
+			
 			} 
 		} while (true);
 		
@@ -61,10 +68,6 @@ public class MovieService {
 		return 5;
 	}
 
-	public int MmovMain(Scanner sc) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
 
 
 

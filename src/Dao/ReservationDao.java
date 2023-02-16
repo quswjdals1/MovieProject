@@ -23,7 +23,7 @@ public class ReservationDao {
 			return reservationDao;
 		}
 
-	
+
 		public List<ReservationVo> selectReservation() throws Exception{
 			
 			//id를 받아서 중복된 id가 있을경우 true, 중복없으면 false
@@ -77,6 +77,7 @@ public class ReservationDao {
 			sb.append("    reservation ");
 			sb.append("WHERE ");
 			sb.append("    mem_id = ? ");
+			sb.append("ORDER BY res_date desc ");
 			String sql = sb.toString();
 			PreparedStatement statement = connection.prepareStatement(sql);
 			statement.setString(1, id);
@@ -169,6 +170,46 @@ public class ReservationDao {
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				System.out.println("delete 실패");
+				return result;
+			}
+		}
+		
+		
+		public int updateReservation(String resNo,int resTotal) throws Exception{
+			
+
+			//resNo와 total을 입력받아서 해당row를 현재시간으로 업데이트
+			int result=0;
+			try {
+				Class.forName("oracle.jdbc.driver.OracleDriver");
+				Connection connection = DriverManager.getConnection("jdbc:oracle:thin:@192.168.146.61:1521:xe","movie","java");
+				
+				
+				StringBuilder sb = new StringBuilder();
+				sb.append("UPDATE reservation ");
+				sb.append("    SET ");
+				sb.append("        res_date = SYSDATE, ");
+				sb.append("        res_total = ? ");
+				sb.append("WHERE ");
+				sb.append("    res_no = ? ");
+
+				String sql = sb.toString();
+				PreparedStatement statement = connection.prepareStatement(sql);
+				statement.setInt(1, resTotal);
+				statement.setString(2, resNo.trim());
+				result = statement.executeUpdate();	
+
+				statement.close();
+				connection.close();
+				return result;
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				System.out.println("자바 클래스 오류");
+				return result;
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				System.out.println("update 실패");
+				e.printStackTrace();
 				return result;
 			}
 		}

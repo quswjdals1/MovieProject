@@ -39,15 +39,13 @@ public class ReservationService {
 				}
 				return 5;
 			}
-			ReservationDao reservationDao= ReservationDao.getInstance();
-			MovieController.resNo=reservationDao.insertReservation(MovieController.userId);
+			
 			res = view.resCartPage(sc);
 			
 			
 		}
 		else {
-			System.out.println("오류");
-			System.exit(0);
+			return 5;
 		}
 		return res;
 	}
