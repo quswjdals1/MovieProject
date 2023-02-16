@@ -655,7 +655,7 @@ public class View {
 				}
 			}
 			System.out.println("                         이전(p), 다음(n) ");
-			System.out.println("                        예매할 영화 번호 입력");
+			System.out.println(" 뒤로가기(enter)          예매할 영화 번호 입력");
 			System.out.println("=====================================================");
 			String sel = sc.nextLine();
 			if(sel.equals("n")) {
@@ -668,6 +668,8 @@ public class View {
 					curNum--;	
 				}
 				continue;
+			}else if(sel.equals("")) {
+				return null;
 			}else {
 				boolean isInteger=false;
 				
@@ -757,11 +759,11 @@ public class View {
 			System.out.println("         ▣");
 			System.out.println("▣                                       ▣");
 			System.out.println("▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣▣┌───┐ ▣");
-			System.out.println("                                  입 구  ");
+			System.out.println(" 뒤로가기(enter)                         입 구  ");
 			System.out.println("=====================================================");
 			System.out.println("원하는 자리를 차례로 입력하세요.ex) \"d3\"");
 			String sel = sc.nextLine();
-			if(!(sel.equals("a1")||sel.equals("a2")||sel.equals("a3")||sel.equals("a4")||
+			if(!(sel.equals("")||sel.equals("a1")||sel.equals("a2")||sel.equals("a3")||sel.equals("a4")||
 					sel.equals("b1")||sel.equals("b2")||sel.equals("b3")||sel.equals("b4")||
 					sel.equals("c1")||sel.equals("c2")||sel.equals("c3")||sel.equals("c4")||
 					sel.equals("d1")||sel.equals("d2")||sel.equals("d3")||sel.equals("d4"))) {
@@ -774,6 +776,9 @@ public class View {
 					e.printStackTrace();
 				}
 				continue;
+			}
+			if(sel.equals("")) {
+				return null;
 			}
 			if(seatDao.selectSeatByDateNo(sRes.getSCH_DATE(), sel).equals("yes")) {
 				System.out.println("이미 예약된 좌석 입니다.");
