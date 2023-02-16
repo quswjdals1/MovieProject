@@ -69,7 +69,7 @@ public class MemberService {
 		}
 		ScheduleDao scheduleDao = ScheduleDao.getInstance();
 		
-		List<ScheduleVo> list = scheduleDao.selectSchedule();
+		List<ScheduleVo> list = scheduleDao.selectScheduleByName(mRes.getMovName());
 		int schRowNum=0;
 		int pageNum=0;
 		if(list.size()%7==0) {
